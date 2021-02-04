@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menuMyProfile"
+        android:icon="@drawable/ic_person_white"
+        android:title="My Profile" />
+    <item
+        android:id="@+id/menuMyCars"
+        android:icon="@drawable/ic_car_white"
+        android:title="My Vehicles" />
+    <item
+        android:id="@+id/menuMyParkingSpots"
+        android:icon="@drawable/ic_park_white"
+        android:title="My Parking Spots" />
+    <item
+        android:id="@+id/menuHome"
+        android:icon="@drawable/ic_home_white"
+        android:title="Home Page" />
+    <item
+        android:id="@+id/menuSettings"
+        android:icon="@drawable/ic_settings_white"
+        android:title="Settings" />
+    <item
+        android:id="@+id/menuLogout"
+        android:icon="@drawable/ic_exit_white"
+        android:title="Log Out" />
+</menu>

@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "662428627103",
+    "project_id": "parkassist-6f0c3",
+    "storage_bucket": "parkassist-6f0c3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:662428627103:android:39f9c348143722a5b7b2aa",
+        "android_client_info": {
+          "package_name": "com.example.myapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "662428627103-lc1e5pjmb65ag3t3ak0lcpv43ctqpmuu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBOGVw8EmCdYGOdGEhIl7s3U429peR-35s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "662428627103-lc1e5pjmb65ag3t3ak0lcpv43ctqpmuu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:662428627103:android:0170c1bd4c911303b7b2aa",
+        "android_client_info": {
+          "package_name": "com.example.parkassist"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "662428627103-lc1e5pjmb65ag3t3ak0lcpv43ctqpmuu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBOGVw8EmCdYGOdGEhIl7s3U429peR-35s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "662428627103-lc1e5pjmb65ag3t3ak0lcpv43ctqpmuu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
