@@ -82,12 +82,13 @@
         android:layout_marginTop="10dp">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/car_numberplate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textMultiLine"
-            android:id="@+id/car_numberplate"
+            android:hint="Numberplate"
             android:imeOptions="actionNext"
-            android:hint="Numberplate"/>
+            android:inputType="textMultiLine"
+            android:textAllCaps="true" />
 
     </com.google.android.material.textfield.TextInputLayout>
 

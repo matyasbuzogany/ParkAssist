@@ -29,7 +29,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 
-public class CarActivity extends AppCompatActivity implements View.OnClickListener, ICarActivity, SwipeRefreshLayout.OnRefreshListener {
+public class  CarActivity extends AppCompatActivity implements View.OnClickListener, ICarActivity, SwipeRefreshLayout.OnRefreshListener {
 
     //widgets
     FloatingActionButton floatingActionButton;

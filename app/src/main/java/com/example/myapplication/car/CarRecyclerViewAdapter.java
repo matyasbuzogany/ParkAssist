@@ -41,12 +41,18 @@ public class CarRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ViewHolder) {
-            String display = mCars.get(position).getNumberplate() + "  -  " + mCars.get(position).getProductionYear()+ " " + mCars.get(position).getBrand();
-            ((ViewHolder)holder).title.setText(display);
-
+            String displayTitle = mCars.get(position).getBrand();
+            String displayNumberplate = mCars.get(position).getNumberplate();
+            String displayYear = mCars.get(position).getProductionYear();
+            String displayColor = mCars.get(position).getColor();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy MMM dd");
             String date = sdf.format(mCars.get(position).getTimestamp());
+
+            ((ViewHolder)holder).title.setText(displayTitle);
+            ((ViewHolder)holder).numberplate.setText(displayNumberplate);
             ((ViewHolder)holder).timestamp.setText(date);
+            ((ViewHolder)holder).year.setText(displayYear);
+            ((ViewHolder)holder).color.setText(displayColor);
         }
     }
 
@@ -66,12 +72,15 @@ public class CarRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView title, timestamp;
+        TextView title, numberplate, year, color, timestamp;
 
         public ViewHolder(View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.title);
+            numberplate = itemView.findViewById(R.id.numberplate);
             timestamp = itemView.findViewById(R.id.timestamp);
+            year = itemView.findViewById(R.id.year);
+            color = itemView.findViewById(R.id.color);
 
             itemView.setOnClickListener(this);
         }
