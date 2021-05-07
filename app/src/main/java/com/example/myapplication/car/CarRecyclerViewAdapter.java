@@ -34,9 +34,11 @@ public class CarRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         ViewHolder holder;
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.car_list_item, parent, false);
         holder = new ViewHolder(view);
-
         return holder;
     }
+
+
+
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
@@ -57,10 +59,13 @@ public class CarRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
 
+
+
     @Override
     public int getItemCount() {
         return mCars.size();
     }
+
 
 
     @Override

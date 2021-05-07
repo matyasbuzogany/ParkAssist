@@ -17,6 +17,7 @@ import com.example.myapplication.MainActivity;
 import com.example.myapplication.ProfileActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.models.Car;
+import com.example.myapplication.parkingspot.MyParkingSpotsActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -95,7 +96,7 @@ public class  CarActivity extends AppCompatActivity implements View.OnClickListe
                     drawerLayout.closeDrawers();
                     return true;
                 case R.id.menuMyParkingSpots:
-                    Toast.makeText(CarActivity.this, "My Parking Spots Selected!", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(getApplicationContext(), MyParkingSpotsActivity.class));
                     drawerLayout.closeDrawers();
                     return true;
                 case R.id.menuHome:
@@ -164,7 +165,7 @@ public class  CarActivity extends AppCompatActivity implements View.OnClickListe
     public void getCarsForCurrentUser() {
         CollectionReference carsCollectionRef = firestore.collection("cars");
 
-        Query carsQuery = null;
+        Query carsQuery;
         if (lastQueriedDocument != null) {
             carsQuery = carsCollectionRef.whereEqualTo("ownerID", userID).orderBy("timestamp", Query.Direction.ASCENDING).startAfter(lastQueriedDocument);
 
@@ -172,7 +173,7 @@ public class  CarActivity extends AppCompatActivity implements View.OnClickListe
             carsQuery = carsCollectionRef.whereEqualTo("ownerID", userID).orderBy("timestamp", Query.Direction.ASCENDING);
         }
 
-        //in order to refresh to work we have to check wheter the data is loaded with the last query, only change the recyclerview when it finds new data
+        //in order to refresh to work we have to check whether the data is loaded with the last query, only change the recyclerview when it finds new data
         carsQuery.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 for (QueryDocumentSnapshot document: task.getResult()) {
@@ -189,11 +190,15 @@ public class  CarActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
+
+
     @Override
     public void onCarSelected(Car car) {
         ViewCarDialog dialog = ViewCarDialog.newInstance(car);
         dialog.show(getSupportFragmentManager(), "Update your car information");
     }
+
+
 
     @Override
     public void updateCar(Car car) {
@@ -209,6 +214,8 @@ public class  CarActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(CarActivity.this, "Error while updating!", Toast.LENGTH_SHORT).show();
             }});
     }
+
+
 
     @Override
     public void deleteCar(Car car) {
