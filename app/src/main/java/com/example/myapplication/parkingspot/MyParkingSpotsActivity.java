@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -25,10 +27,13 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MyParkingSpotsActivity extends AppCompatActivity implements View.OnClickListener, IMyParkingSpotsActivity, SwipeRefreshLayout.OnRefreshListener {
 
@@ -90,7 +95,7 @@ public class MyParkingSpotsActivity extends AppCompatActivity implements View.On
                     drawerLayout.closeDrawers();
                     return true;
                 case R.id.menuMyParkingSpots:
-                    Toast.makeText(MyParkingSpotsActivity.this, "My Parking Spots Selected!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MyParkingSpotsActivity.this, "You are at My Parking Spots Page!", Toast.LENGTH_SHORT).show();
                     drawerLayout.closeDrawers();
                     return true;
                 case R.id.menuHome:
@@ -98,11 +103,9 @@ public class MyParkingSpotsActivity extends AppCompatActivity implements View.On
                     drawerLayout.closeDrawers();
                     return true;
                 case R.id.menuSettings:
-                    Toast.makeText(MyParkingSpotsActivity.this, "Settings Selected!", Toast.LENGTH_SHORT).show();
                     drawerLayout.closeDrawers();
                     return true;
                 case R.id.menuLogout:
-                    Toast.makeText(MyParkingSpotsActivity.this, "Logout Selected!", Toast.LENGTH_SHORT).show();
                     drawerLayout.closeDrawers();
                     return true;
             }
@@ -133,8 +136,15 @@ public class MyParkingSpotsActivity extends AppCompatActivity implements View.On
         parkingSpot.setCountry(country);
         parkingSpot.setPostcode(postcode);
         parkingSpot.setOpen(open);
-
         parkingSpot.setUserID(userID);
+
+        GeoPoint latlng = getLocationFromAddress(address, city, country, postcode);
+
+        String lat = String.valueOf(latlng.getLatitude());
+        String lon = String.valueOf(latlng.getLongitude());
+
+        parkingSpot.setLatitude(lat);
+        parkingSpot.setLongitude(lon);
 
         newSpotReference.set(parkingSpot).addOnCompleteListener( task -> {
             if (task.isSuccessful()) {
@@ -143,6 +153,35 @@ public class MyParkingSpotsActivity extends AppCompatActivity implements View.On
                 Toast.makeText(MyParkingSpotsActivity.this, "Error Adding Parking Spot to database!", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+
+
+    public GeoPoint getLocationFromAddress(String strAddress, String strCity, String strCountry, String strPostcode) {
+        Geocoder geocoder = new Geocoder(this);
+        String completeAddress = strAddress + ", " + strCity + ", " + strCountry + ", " + strPostcode;
+        List<Address> address;
+        GeoPoint p1 = null;
+
+        try {
+            address = geocoder.getFromLocationName(completeAddress, 5);
+
+            if (address == null) {
+                return null;
+            }
+
+            Address location = address.get(0);
+            location.getLatitude();
+            location.getLongitude();
+
+            p1 = new GeoPoint(location.getLatitude(), location.getLongitude());
+
+            return p1;
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Error in geocode!");
+        }
+        return p1;
     }
 
 
@@ -158,10 +197,17 @@ public class MyParkingSpotsActivity extends AppCompatActivity implements View.On
     @Override
     public void updateSpot(ParkingSpot parkingSpot) {
         DocumentReference reference = firestore.collection("parkingspots").document(parkingSpot.getParkingSpotID());
+
+        GeoPoint latlng = getLocationFromAddress(parkingSpot.getAddress(), parkingSpot.getCity(), parkingSpot.getCountry(), parkingSpot.getPostcode());
+        String lat = String.valueOf(latlng.getLatitude());
+        String lon = String.valueOf(latlng.getLongitude());
+
         reference.update("address", parkingSpot.getAddress(),
                 "country", parkingSpot.getCountry(),
                 "city", parkingSpot.getCity(),
                 "postcode", parkingSpot.getPostcode(),
+                "latitude", lat,
+                "longitude", lon,
                 "parkingSpotNr", parkingSpot.getParkingSpotNr(),
                 "open", parkingSpot.getOpen()).addOnCompleteListener( task -> {
                     if (task.isSuccessful()) {

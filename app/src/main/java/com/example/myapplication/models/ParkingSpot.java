@@ -105,7 +105,7 @@ public class ParkingSpot implements Parcelable {
         return latitude;
     }
 
-    public void setLa(String latitude) {
+    public void setLatitude(String latitude) {
         this.latitude = latitude;
     }
 
@@ -121,8 +121,8 @@ public class ParkingSpot implements Parcelable {
         return open;
     }
 
-    public void setOpen(boolean open1) {
-        open = open;
+    public void setOpen(boolean isOpen) {
+        open = isOpen;
     }
 
     public Date getTimestamp() {

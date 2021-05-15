@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -30,6 +31,8 @@ import com.example.myapplication.models.Car;
 import com.example.myapplication.models.User;
 import com.example.myapplication.parkingspot.MyParkingSpotsActivity;
 import com.example.myapplication.user.ViewUserDialog;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -100,27 +103,40 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 itemView.setOnClickListener(v -> {
 
+                    //Scan a Numberplate
                     if (getAdapterPosition() == 0) {
                         scanANumberPlate();
                     }
 
+                    //Enter a Numberplate
                     if (getAdapterPosition() == 1) {
                         //TODO
                         Toast.makeText(v.getContext(), "Clicked -> " + titles.get(getAdapterPosition()) + ", not implemented yet", Toast.LENGTH_SHORT).show();
                         enterANumberplate();
                     }
 
+                    //Open maps with the parking spots available
                     if (getAdapterPosition() == 2) {
-                        //TODO
+                        if (isServicesOK()) {
+                            Intent intent = new Intent(MainActivity.this, MapsActivity.class);
+                            startActivity(intent);
+                        }
                         Toast.makeText(v.getContext(), "Clicked -> " + titles.get(getAdapterPosition()) + ", not implemented yet", Toast.LENGTH_SHORT).show();
                     }
 
+                    //List all parking spots
                     if (getAdapterPosition() == 3) {
                         //TODO
                         Toast.makeText(v.getContext(), "Clicked -> " + titles.get(getAdapterPosition()) + ", not implemented yet", Toast.LENGTH_SHORT).show();
                     }
 
+                    //QR Code
                     if (getAdapterPosition() == 4) {
+                        Toast.makeText(v.getContext(), "Clicked -> " + titles.get(getAdapterPosition()) + ", not implemented yet", Toast.LENGTH_SHORT).show();
+                    }
+
+                    //Logout
+                    if (getAdapterPosition() == 5) {
                         Toast.makeText(v.getContext(), "Logged out! ", Toast.LENGTH_SHORT).show();
                         logout();
                     }
@@ -141,6 +157,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     List<String> titles;
     List<Integer> images;
     GridAdapter adapter;
+
+
+
+    public boolean isServicesOK() {
+        int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(MainActivity.this);
+
+        if (available == ConnectionResult.SUCCESS) {
+            //everything fine
+            System.out.println("Google play services working!");
+            return true;
+        } else if (GoogleApiAvailability.getInstance().isUserResolvableError(available)) {
+            //an error occured
+            System.out.println("An error occured bu we can fix it!");
+            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(MainActivity.this, available, 9001);
+            dialog.show();
+        } else {
+            Toast.makeText(this, "You can't make map requests!", Toast.LENGTH_SHORT).show();
+        }
+        return false;
+    }
+
 
 
     @Override
@@ -165,6 +202,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 104);
         }
 
+
+
         firestore = FirebaseFirestore.getInstance();
 
         drawerLayout = findViewById(R.id.drawer);
@@ -183,12 +222,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         titles.add("Scan a Number Plate");
         titles.add("Enter a Numberplate");
-        titles.add("Look for Parking Spots");
+        titles.add("Open Maps");
+        titles.add("List all Parking Spots");
         titles.add("Generate QR Code");
         titles.add("Logout");
 
         images.add(R.drawable.ic_camera_white);
         images.add(R.drawable.ic_numberplate_white);
+        images.add(R.drawable.ic_map_white);
         images.add(R.drawable.ic_park_white);
         images.add(R.drawable.ic_qrcode_white);
         images.add(R.drawable.ic_exit_white);
@@ -221,11 +262,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     drawerLayout.closeDrawers();
                     return true;
                 case R.id.menuSettings:
-                    Toast.makeText(MainActivity.this, "Settings Selected!", Toast.LENGTH_SHORT).show();
                     drawerLayout.closeDrawers();
                     return true;
                 case R.id.menuLogout:
-                    Toast.makeText(MainActivity.this, "Logout Selected!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Logging out!", Toast.LENGTH_SHORT).show();
                     drawerLayout.closeDrawers();
                     logout();
                     return true;
@@ -261,10 +301,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
             String text = firebaseVisionText.getText(); // text should be the license plate
-            System.out.println("TEXT FOUND IN IMAGE: " + text);
+            String trimmedText = text.replaceAll("\\s+", "");
+            System.out.println("TEXT FOUND IN IMAGE: " + trimmedText);
 
             CollectionReference carsCollectionReference = firestore.collection("cars");
-            Query carsQuery =  carsCollectionReference.whereEqualTo("numberplate", text);
+            Query carsQuery =  carsCollectionReference.whereEqualTo("numberplate", trimmedText);
 
             carsQuery.get().addOnCompleteListener( task1 -> {
                 if(task1.isSuccessful()) {
@@ -286,7 +327,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     System.out.println("Not Found");
                     Toast.makeText(this, "User not found!", Toast.LENGTH_SHORT).show();
 
-                } else {
+                } else if (!task1.isSuccessful()) {
                     Toast.makeText(this, "Query unsuccessful!", Toast.LENGTH_SHORT).show();
                 }
             });

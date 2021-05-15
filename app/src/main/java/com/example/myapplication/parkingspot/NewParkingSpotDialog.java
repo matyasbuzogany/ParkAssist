@@ -72,7 +72,7 @@ public class NewParkingSpotDialog extends DialogFragment implements View.OnClick
                 boolean open = mSwitch.isChecked();
                 System.out.println("IS CHECKED: " + open);
 
-                if (!address.equals("")) {
+                if (!address.equals("") && !country.equals("") && !city.equals("") && !postcode.equals("")) {
                     iMyParkingSpotsActivity.createNewSpot(number, address, city, country, postcode, open);
                     getDialog().dismiss();
                 } else {

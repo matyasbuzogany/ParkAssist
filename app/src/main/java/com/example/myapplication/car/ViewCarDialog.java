@@ -63,7 +63,7 @@ public class ViewCarDialog extends DialogFragment implements View.OnClickListene
         mDelete.setOnClickListener(this);
         mUpdate.setOnClickListener(this);
 
-        getDialog().setTitle("Update Car");
+        getDialog().setTitle("Update Your Car");
 
         setInitialProperties();
 

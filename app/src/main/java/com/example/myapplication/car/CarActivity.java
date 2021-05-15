@@ -38,15 +38,17 @@ public class  CarActivity extends AppCompatActivity implements View.OnClickListe
     SwipeRefreshLayout mSwipeRefreshLayout;
 
     //general
-    Toolbar toolbar;
     NavigationView navigationView;
+
+    Toolbar toolbar;
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle actionBarDrawerToggle;
 
     //Firebase
     FirebaseAuth firebaseAuth;
-    FirebaseFirestore firestore;
     String userID;
+
+    FirebaseFirestore firestore;
 
     //Variables
     View mParentLayout;
@@ -66,8 +68,9 @@ public class  CarActivity extends AppCompatActivity implements View.OnClickListe
         mSwipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
 
         firebaseAuth = FirebaseAuth.getInstance();
-        firestore = FirebaseFirestore.getInstance();
         userID = firebaseAuth.getCurrentUser().getUid();
+
+        firestore = FirebaseFirestore.getInstance();
 
         //Setting up Toolbar
         drawerLayout = findViewById(R.id.drawer);
@@ -93,6 +96,8 @@ public class  CarActivity extends AppCompatActivity implements View.OnClickListe
                     drawerLayout.closeDrawers();
                     return true;
                 case R.id.menuMyCars:
+                    Toast.makeText(CarActivity.this, "You are at My Cars Page!", Toast.LENGTH_SHORT).show();
+
                     drawerLayout.closeDrawers();
                     return true;
                 case R.id.menuMyParkingSpots:
@@ -104,7 +109,6 @@ public class  CarActivity extends AppCompatActivity implements View.OnClickListe
                     drawerLayout.closeDrawers();
                     return true;
                 case R.id.menuSettings:
-                    Toast.makeText(CarActivity.this, "Settings Selected!", Toast.LENGTH_SHORT).show();
                     drawerLayout.closeDrawers();
                     return true;
                 case R.id.menuLogout:

@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.myapplication.car.CarActivity;
+import com.example.myapplication.parkingspot.MyParkingSpotsActivity;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -77,25 +78,22 @@ public class ProfileActivity extends AppCompatActivity {
 
             switch(id) {
                 case R.id.menuMyProfile:
-                    Toast.makeText(ProfileActivity.this, "My Profile Selected!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ProfileActivity.this, "You are at My Profil Page!", Toast.LENGTH_SHORT).show();
                     drawerLayout.closeDrawers();
                     return true;
                 case R.id.menuMyCars:
-                    Toast.makeText(ProfileActivity.this, "My Cars Selected!", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(getApplicationContext(), CarActivity.class));
                     drawerLayout.closeDrawers();
                     return true;
                 case R.id.menuMyParkingSpots:
-                    Toast.makeText(ProfileActivity.this, "My Parking Spots Selected!", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(getApplicationContext(), MyParkingSpotsActivity.class));
                     drawerLayout.closeDrawers();
                     return true;
                 case R.id.menuHome:
-                    Toast.makeText(ProfileActivity.this, "Home Selected!", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     drawerLayout.closeDrawers();
                     return true;
                 case R.id.menuSettings:
-                    Toast.makeText(ProfileActivity.this, "Settings Selected!", Toast.LENGTH_SHORT).show();
                     drawerLayout.closeDrawers();
                     return true;
                 case R.id.menuLogout:

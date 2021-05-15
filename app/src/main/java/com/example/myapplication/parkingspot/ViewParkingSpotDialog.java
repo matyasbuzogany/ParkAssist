@@ -70,6 +70,8 @@ public class ViewParkingSpotDialog extends DialogFragment implements View.OnClic
         mDelete.setOnClickListener(this);
         mUpdate.setOnClickListener(this);
 
+        getDialog().setTitle("Update Your Parking Spot");
+
         setInitialProperties();
 
         return view;
@@ -83,6 +85,11 @@ public class ViewParkingSpotDialog extends DialogFragment implements View.OnClic
         mCity.setText(mParkingSpot.getCity());
         mPostcode.setText(mParkingSpot.getPostcode());
         mNumber.setText(mParkingSpot.getParkingSpotNr());
+        if (mParkingSpot.getOpen()) {
+            mSwitch.setChecked(true);
+        } else {
+            mSwitch.setChecked(false);
+        }
     }
 
 
@@ -95,7 +102,7 @@ public class ViewParkingSpotDialog extends DialogFragment implements View.OnClic
                 String city = mCity.getText().toString().trim();
                 String postcode = mPostcode.getText().toString().trim();
                 String number = mNumber.getText().toString().trim();
-                Boolean isClicked = mSwitch.isChecked();
+                boolean isClicked = mSwitch.isChecked();
                 System.out.println("ISCLICKED: " + isClicked);
                 System.out.println("CHECHED: " + mSwitch.isChecked());
 

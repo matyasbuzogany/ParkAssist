@@ -87,7 +87,7 @@
             android:inputType="textMultiLine"
             android:id="@+id/spot_number"
             android:imeOptions="actionNext"
-            android:hint="Number Number"/>
+            android:hint="Parking Spot Number"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 

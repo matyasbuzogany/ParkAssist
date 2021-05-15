@@ -57,9 +57,11 @@ public class ViewUserDialog extends DialogFragment implements View.OnClickListen
 //        mEmail.setBackground(null);
         mEmail.setInputType(InputType.TYPE_NULL);
         mFirstName = view.findViewById(R.id.user_firstName);
-        mFirstName.setEnabled(false);
+//        mFirstName.setEnabled(false);
         mLastName = view.findViewById(R.id.user_lastName);
+//        mLastName.setEnabled(false);
         mPhoneNumber = view.findViewById(R.id.user_phonenumber);
+//        mPhoneNumber.setEnabled(false);
         mRateUser = view.findViewById(R.id.rateUser);
         mCancel = view.findViewById(R.id.cancel);
 
