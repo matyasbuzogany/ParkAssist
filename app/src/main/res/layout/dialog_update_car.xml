@@ -87,7 +87,7 @@
             android:layout_height="wrap_content"
             android:hint="Numberplate"
             android:imeOptions="actionNext"
-            android:inputType="textMultiLine"
+            android:inputType="textCapCharacters"
             android:textAllCaps="true" />
 
     </com.google.android.material.textfield.TextInputLayout>

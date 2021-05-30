@@ -28,6 +28,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import org.w3c.dom.Document;
+
 import java.util.ArrayList;
 
 public class  CarActivity extends AppCompatActivity implements View.OnClickListener, ICarActivity, SwipeRefreshLayout.OnRefreshListener {

@@ -40,6 +40,7 @@
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps"></activity>
         <activity android:name=".parkingspot.MyParkingSpotsActivity" />
+        <activity android:name=".listparkingspots.ListParkingSpotsActivity" />
         <activity android:name=".car.CarActivity" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".LoginActivity">

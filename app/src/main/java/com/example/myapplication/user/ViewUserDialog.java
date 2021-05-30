@@ -1,6 +1,8 @@
 package com.example.myapplication.user;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.InputType;
@@ -21,7 +23,7 @@ import com.example.myapplication.models.User;
 public class ViewUserDialog extends DialogFragment implements View.OnClickListener {
 
     private EditText mEmail, mFirstName, mLastName, mPhoneNumber;
-    private Button mRateUser, mCancel;
+    private Button mCallUser, mCancel;
 
     User mUser;
 
@@ -62,10 +64,10 @@ public class ViewUserDialog extends DialogFragment implements View.OnClickListen
 //        mLastName.setEnabled(false);
         mPhoneNumber = view.findViewById(R.id.user_phonenumber);
 //        mPhoneNumber.setEnabled(false);
-        mRateUser = view.findViewById(R.id.rateUser);
+        mCallUser = view.findViewById(R.id.callUser);
         mCancel = view.findViewById(R.id.cancel);
 
-        mRateUser.setOnClickListener(this);
+        mCallUser.setOnClickListener(this);
         mCancel.setOnClickListener(this);
 
         getDialog().setTitle("Owner of the Vehicle");
@@ -87,8 +89,12 @@ public class ViewUserDialog extends DialogFragment implements View.OnClickListen
         switch (v.getId()) {
             case(R.id.cancel):
                 getDialog().dismiss();
-            case(R.id.rateUser):
+            case(R.id.callUser):
                 getDialog().dismiss();
+                String phoneNumber = mUser.getPhoneNumber();
+                Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                callIntent.setData(Uri.parse("tel:" + phoneNumber));
+                startActivity(callIntent);
         }
     }
 

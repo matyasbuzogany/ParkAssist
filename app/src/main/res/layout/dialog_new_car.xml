@@ -84,7 +84,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textMultiLine"
+            android:inputType="textCapCharacters"
             android:id="@+id/car_numberplate"
             android:imeOptions="actionNext"
             android:hint="Numberplate"/>

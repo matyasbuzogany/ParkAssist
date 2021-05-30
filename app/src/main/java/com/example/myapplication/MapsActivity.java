@@ -1,14 +1,11 @@
 package com.example.myapplication;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -30,13 +27,12 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
-    private static final int REQUEST_LOCATION = 1;
+    private static final int REQUEST_LOCATION = 101;
     private GoogleMap mMap;
     private ActivityMapsBinding binding;
     FirebaseFirestore firestore;
     FirebaseAuth firebaseAuth;
     String userID;
-    LocationManager locationManager;
 
 
     @Override
@@ -57,6 +53,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
 
         mMap = googleMap;
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
+            return;
+        }
+        mMap.setMyLocationEnabled(true);
 
         firebaseAuth = FirebaseAuth.getInstance();
         userID = firebaseAuth.getUid();
@@ -75,15 +76,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-
-        // Add a marker in Cluj and move the camera
-        LatLng current = new LatLng(46.7712, 23.6236);
-//        mMap.addMarker(new MarkerOptions().position(current).title("Marker in Cluj-Napoca").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
+        // Add a marker to current position
+        LatLng current = new LatLng(46.773018, 23.595214);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(current));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(46.7712, 23.6236), 12.0f));
-
-
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(current, 15.0f));
     }
+
 
 
     public void addParkingSpotMarker(String latitude, String longitude, String address, String number) {
@@ -92,11 +90,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.addMarker(new MarkerOptions().position(latlng).title(address + ", Parking Spot Number: " + number).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
     }
 
-
-
-    public void getCurrentLocation() {
-
-    }
 
 
 }

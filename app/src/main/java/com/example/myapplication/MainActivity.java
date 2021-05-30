@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.myapplication.car.CarActivity;
+import com.example.myapplication.listparkingspots.ListParkingSpotsActivity;
 import com.example.myapplication.models.Car;
 import com.example.myapplication.models.User;
 import com.example.myapplication.parkingspot.MyParkingSpotsActivity;
@@ -52,12 +53,13 @@ import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, IMainActivity {
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) { //implemented later
         return false;
     }
+
 
     public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> { //adapter for displaying ceratain options is recycler view as card view
 
@@ -110,8 +112,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     //Enter a Numberplate
                     if (getAdapterPosition() == 1) {
-                        //TODO
-                        Toast.makeText(v.getContext(), "Clicked -> " + titles.get(getAdapterPosition()) + ", not implemented yet", Toast.LENGTH_SHORT).show();
                         enterANumberplate();
                     }
 
@@ -121,13 +121,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             Intent intent = new Intent(MainActivity.this, MapsActivity.class);
                             startActivity(intent);
                         }
-                        Toast.makeText(v.getContext(), "Clicked -> " + titles.get(getAdapterPosition()) + ", not implemented yet", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(v.getContext(), "Opening the Map", Toast.LENGTH_SHORT).show();
                     }
 
                     //List all parking spots
                     if (getAdapterPosition() == 3) {
-                        //TODO
                         Toast.makeText(v.getContext(), "Clicked -> " + titles.get(getAdapterPosition()) + ", not implemented yet", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(getApplicationContext(), ListParkingSpotsActivity.class));
                     }
 
                     //QR Code
@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     //Logout
                     if (getAdapterPosition() == 5) {
-                        Toast.makeText(v.getContext(), "Logged out! ", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(v.getContext(), "Logging out! ", Toast.LENGTH_SHORT).show();
                         logout();
                     }
                 });
@@ -187,19 +187,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             //requestCode = any number
-            requestPermissions(new String[]{Manifest.permission.CAMERA}, 101);
+            requestPermissions(new String[]{Manifest.permission.CAMERA}, 103);
         }
 
         if (checkSelfPermission(Manifest.permission.LOCATION_HARDWARE) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.LOCATION_HARDWARE}, 102);
+            requestPermissions(new String[]{Manifest.permission.LOCATION_HARDWARE}, 104);
         }
 
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 103);
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 101);
         }
 
         if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 104);
+            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 102);
         }
 
 
@@ -339,9 +339,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     public void enterANumberplate() {
-
+        EnterNumberplateDialog dialog = new EnterNumberplateDialog();
+        dialog.show(getSupportFragmentManager(), "Search for a Numberplate");
     }
 
+
+    @Override
+    public void getCarForNumberplate(String numberplate) {
+        CollectionReference carsCollectionReference = firestore.collection("cars");
+        String uppercases = numberplate.toUpperCase();
+        Query carsQuery =  carsCollectionReference.whereEqualTo("numberplate", uppercases);
+        System.out.println("NUMBERPLATE: " + uppercases);
+
+        carsQuery.get().addOnCompleteListener( task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot documentSnapshot: task.getResult()) {
+                    Car car = documentSnapshot.toObject(Car.class);
+                    DocumentReference documentReference = firestore.collection("users").document(car.getOwnerID());
+
+                    documentReference.addSnapshotListener(this, (value, error) -> {
+                        User user = new User(value.getString("email"), value.getString("firstName"), value.getString("lastName"), value.getString("phoneNumber"));
+                        ViewUserDialog dialog = ViewUserDialog.newInstance(user);
+                        dialog.show(getSupportFragmentManager(), "Owner of the Vehicle;");
+                    });
+                }
+            } if (task.getResult().size() == 0) {
+                Toast.makeText(this, "User not found!", Toast.LENGTH_SHORT).show();
+            } else if (!task.isSuccessful()) {
+                Toast.makeText(this, "Query unsuccessful!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
 
 
