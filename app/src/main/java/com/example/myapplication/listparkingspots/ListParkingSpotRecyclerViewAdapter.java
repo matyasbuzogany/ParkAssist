@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
 import com.example.myapplication.models.ParkingSpot;
-import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 
@@ -25,7 +24,7 @@ public class ListParkingSpotRecyclerViewAdapter extends RecyclerView.Adapter<Rec
     private IListParkingSpotsActivity iListParkingSpotsActivity;
 
 
-    public ListParkingSpotRecyclerViewAdapter(Context context, ArrayList<ParkingSpot> spots) {
+    public ListParkingSpotRecyclerViewAdapter(Context context, ArrayList<ParkingSpot> spots ) {
         mContext = context;
         mSpots = spots;
     }
@@ -47,8 +46,8 @@ public class ListParkingSpotRecyclerViewAdapter extends RecyclerView.Adapter<Rec
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ViewHolder) {
             Location currentLocation = new Location("Current");
-            currentLocation.setLatitude(46.773018);
-            currentLocation.setLongitude(23.595214);
+            currentLocation.setLatitude(46.772928);
+            currentLocation.setLongitude(23.595494);
 
             Location spotLocation = new Location("Parking Spot");
             spotLocation.setLatitude(Double.parseDouble(mSpots.get(position).getLatitude()));

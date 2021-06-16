@@ -81,22 +81,22 @@
         android:layout_height="match_parent">
 
         <Button
-            android:id="@+id/callUser"
+            android:id="@+id/cancelUserButton"
             android:layout_width="175dp"
             android:layout_height="70dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
-            android:text="Call User"
+            android:text="Cancel"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/cancel"
+            android:id="@+id/callUserButton"
             android:layout_width="175dp"
             android:layout_height="70dp"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="16dp"
-            android:text="Cancel"
+            android:text="Call User"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>

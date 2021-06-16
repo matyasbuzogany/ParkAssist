@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.myapplication.LoginActivity;
 import com.example.myapplication.MainActivity;
 import com.example.myapplication.ProfileActivity;
 import com.example.myapplication.R;
@@ -27,8 +28,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-
-import org.w3c.dom.Document;
 
 import java.util.ArrayList;
 
@@ -114,8 +113,9 @@ public class  CarActivity extends AppCompatActivity implements View.OnClickListe
                     drawerLayout.closeDrawers();
                     return true;
                 case R.id.menuLogout:
-                    Toast.makeText(CarActivity.this, "Logout Selected!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CarActivity.this, "Logging out!", Toast.LENGTH_SHORT).show();
                     drawerLayout.closeDrawers();
+                    logout();
                     return true;
             }
             return false;
@@ -251,6 +251,11 @@ public class  CarActivity extends AppCompatActivity implements View.OnClickListe
         mRecyclerView.setAdapter(mCarRecyclerViewAdapter);
     }
 
+    public void logout() {
+        FirebaseAuth.getInstance().signOut();
+        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+        finish();
+    }
 
 
 }

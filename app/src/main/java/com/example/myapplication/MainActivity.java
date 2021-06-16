@@ -126,17 +126,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     //List all parking spots
                     if (getAdapterPosition() == 3) {
-                        Toast.makeText(v.getContext(), "Clicked -> " + titles.get(getAdapterPosition()) + ", not implemented yet", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(v.getContext(), "Listing all available Parking Spots!", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(getApplicationContext(), ListParkingSpotsActivity.class));
                     }
 
-                    //QR Code
-                    if (getAdapterPosition() == 4) {
-                        Toast.makeText(v.getContext(), "Clicked -> " + titles.get(getAdapterPosition()) + ", not implemented yet", Toast.LENGTH_SHORT).show();
-                    }
-
                     //Logout
-                    if (getAdapterPosition() == 5) {
+                    if (getAdapterPosition() == 4) {
                         Toast.makeText(v.getContext(), "Logging out! ", Toast.LENGTH_SHORT).show();
                         logout();
                     }
@@ -224,14 +219,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         titles.add("Enter a Numberplate");
         titles.add("Open Maps");
         titles.add("List all Parking Spots");
-        titles.add("Generate QR Code");
         titles.add("Logout");
 
         images.add(R.drawable.ic_camera_white);
         images.add(R.drawable.ic_numberplate_white);
         images.add(R.drawable.ic_map_white);
         images.add(R.drawable.ic_park_white);
-        images.add(R.drawable.ic_qrcode_white);
         images.add(R.drawable.ic_exit_white);
 
         adapter = new GridAdapter(this, titles, images);

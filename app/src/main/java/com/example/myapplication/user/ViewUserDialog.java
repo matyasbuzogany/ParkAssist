@@ -1,10 +1,8 @@
 package com.example.myapplication.user;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +13,6 @@ import android.widget.EditText;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
 
 import com.example.myapplication.models.User;
@@ -55,20 +52,23 @@ public class ViewUserDialog extends DialogFragment implements View.OnClickListen
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_view_user, container, false);
         mEmail = view.findViewById(R.id.user_email);
-//        mEmail.setKeyListener(null);
-//        mEmail.setBackground(null);
         mEmail.setInputType(InputType.TYPE_NULL);
         mFirstName = view.findViewById(R.id.user_firstName);
-//        mFirstName.setEnabled(false);
         mLastName = view.findViewById(R.id.user_lastName);
-//        mLastName.setEnabled(false);
         mPhoneNumber = view.findViewById(R.id.user_phonenumber);
-//        mPhoneNumber.setEnabled(false);
-        mCallUser = view.findViewById(R.id.callUser);
-        mCancel = view.findViewById(R.id.cancel);
+        mCallUser = view.findViewById(R.id.callUserButton);
+        mCancel = view.findViewById(R.id.cancelUserButton);
 
-        mCallUser.setOnClickListener(this);
-        mCancel.setOnClickListener(this);
+        mCallUser.setOnClickListener(v -> {
+            getDialog().dismiss();
+            String phoneNumber = mUser.getPhoneNumber();
+            Intent callIntent = new Intent(Intent.ACTION_DIAL);
+            callIntent.setData(Uri.parse("tel:" + phoneNumber));
+            startActivity(callIntent);
+        });
+        mCancel.setOnClickListener(v -> {
+            getDialog().dismiss();
+        });
 
         getDialog().setTitle("Owner of the Vehicle");
 
@@ -86,16 +86,7 @@ public class ViewUserDialog extends DialogFragment implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case(R.id.cancel):
-                getDialog().dismiss();
-            case(R.id.callUser):
-                getDialog().dismiss();
-                String phoneNumber = mUser.getPhoneNumber();
-                Intent callIntent = new Intent(Intent.ACTION_DIAL);
-                callIntent.setData(Uri.parse("tel:" + phoneNumber));
-                startActivity(callIntent);
-        }
+
     }
 
 

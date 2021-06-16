@@ -3,16 +3,17 @@ package com.example.myapplication.models;
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
+import com.google.android.gms.maps.model.LatLng;
+
 
 import androidx.annotation.RequiresApi;
 
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.ServerTimestamp;
-import com.google.type.LatLng;
 
 import java.util.Date;
 
-public class ParkingSpot implements Parcelable {
+public class ParkingSpot implements Parcelable{
 
     private String parkingSpotID;
     private String parkingSpotNr;
@@ -179,4 +180,5 @@ public class ParkingSpot implements Parcelable {
         dest.writeString(latitude);
         dest.writeString(longitude);
     }
+
 }

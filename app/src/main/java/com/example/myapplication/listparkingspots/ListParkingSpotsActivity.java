@@ -1,14 +1,19 @@
 package com.example.myapplication.listparkingspots;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,11 +25,12 @@ import com.example.myapplication.R;
 import com.example.myapplication.car.CarActivity;
 import com.example.myapplication.models.ParkingSpot;
 import com.example.myapplication.parkingspot.MyParkingSpotsActivity;
-import com.example.myapplication.parkingspot.ParkingSpotRecyclerViewAdapter;
-import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -33,6 +39,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 
 public class ListParkingSpotsActivity extends AppCompatActivity implements View.OnClickListener, IListParkingSpotsActivity, SwipeRefreshLayout.OnRefreshListener {
+
+    private static final int REQUEST_LOCATION = 101;
 
     RecyclerView mRecyclerView;
     SwipeRefreshLayout mSwipeRefreshLayout;
@@ -51,9 +59,19 @@ public class ListParkingSpotsActivity extends AppCompatActivity implements View.
     ListParkingSpotRecyclerViewAdapter mParkingSpotRecyclerViewAdapter;
     DocumentSnapshot lastQueriedDocument;
 
+    FusedLocationProviderClient fusedLocationProviderClient;
+    Location currentLocation;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
+            return;
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listparkingspots);
 
@@ -75,6 +93,12 @@ public class ListParkingSpotsActivity extends AppCompatActivity implements View.
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
         actionBarDrawerToggle.syncState();
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, location -> {
+            currentLocation = location;
+            System.out.println("Current Location: " + currentLocation);
+        });
 
         navigationView.setNavigationItemSelectedListener(item -> {
 
@@ -107,8 +131,8 @@ public class ListParkingSpotsActivity extends AppCompatActivity implements View.
             return false;
         });
 
-        initRecyclerView();
         getAllParkingSpots();
+        initRecyclerView();
         mSwipeRefreshLayout.setOnRefreshListener(this);
     }
 
@@ -129,6 +153,30 @@ public class ListParkingSpotsActivity extends AppCompatActivity implements View.
     }
 
 
+    private void sortParkingSpots( ArrayList<ParkingSpot> spots) {
+        ParkingSpot temporary;
+        for(int i = 0; i < spots.size(); i++) {
+            for (int j = 0; j < spots.size() - i - 1; j ++) {
+                if (calculateDistanceToParkingSpot(spots.get(j)) > (calculateDistanceToParkingSpot(spots.get(j+1)))) {
+                    temporary = spots.get(j);
+                    spots.set(j, spots.get(j+1));
+                    spots.set(j+1, temporary);
+                }
+            }
+        }
+    }
+
+
+    private double calculateDistanceToParkingSpot(ParkingSpot parkingSpot) {
+
+        Location parkingSpotLocation = new Location("Parking Spot");
+        parkingSpotLocation.setLatitude(Double.parseDouble(parkingSpot.getLatitude()));
+        parkingSpotLocation.setLongitude(Double.parseDouble(parkingSpot.getLongitude()));
+
+        return currentLocation.distanceTo(parkingSpotLocation);
+    }
+
+
 
 
     public void getAllParkingSpots() {
@@ -136,9 +184,9 @@ public class ListParkingSpotsActivity extends AppCompatActivity implements View.
         Query query;
 
         if (lastQueriedDocument != null) {
-            query = spotsCollectionReference.orderBy("timestamp", Query.Direction.ASCENDING).startAfter(lastQueriedDocument);
+            query = spotsCollectionReference.whereEqualTo("open", true).startAfter(lastQueriedDocument);
         } else {
-            query = spotsCollectionReference.orderBy("timestamp", Query.Direction.ASCENDING);
+            query = spotsCollectionReference.whereEqualTo("open", true);
         }
 
         query.get().addOnCompleteListener( task -> {
@@ -148,6 +196,8 @@ public class ListParkingSpotsActivity extends AppCompatActivity implements View.
                     mSpots.add(parkingSpot);
                 }
 
+                sortParkingSpots(mSpots);
+
                 if (task.getResult().size() != 0) {
                     lastQueriedDocument = task.getResult().getDocuments().get(task.getResult().size()-1);
                 }
@@ -156,6 +206,7 @@ public class ListParkingSpotsActivity extends AppCompatActivity implements View.
                 Toast.makeText(ListParkingSpotsActivity.this, "Query Unsuccessful!", Toast.LENGTH_SHORT).show();
             }
         });
+
     };
 
 
@@ -171,10 +222,56 @@ public class ListParkingSpotsActivity extends AppCompatActivity implements View.
 
     @Override
     public void onReserveButtonClicked(ParkingSpot parkingSpot) {
-        //TODO Reserve in backend
-        LatLng current = new LatLng(46.773018, 23.595214);
-        String uri = "http://maps.google.com/maps?saddr=" + current.latitude + "," + current.longitude + "&daddr=" + parkingSpot.getLatitude() + "," + parkingSpot.getLongitude();
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-        startActivity(intent);
+        createAlertDialog(parkingSpot);
     }
+
+
+
+
+    private void createAlertDialog(ParkingSpot parkingSpot) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Are you sure you want to reserve this spot: \n" + parkingSpot.getAddress() + ", " + parkingSpot.getParkingSpotNr() + " ?");
+        builder.setTitle("Confirm Reservation");
+
+        builder.setPositiveButton("Yes", (dialog, which) -> {
+            DocumentReference reference = firestore.collection("parkingspots").document(parkingSpot.getParkingSpotID());
+
+            reference.update("open", false).addOnCompleteListener( task -> {
+
+                if (task.isSuccessful()) {
+                    String uri = "http://maps.google.com/maps?saddr=" + currentLocation.getLatitude() + "," + currentLocation.getLongitude() + "&daddr=" + parkingSpot.getLatitude() + "," + parkingSpot.getLongitude();
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                    startActivity(intent);
+                }
+                else {
+                    Toast.makeText(ListParkingSpotsActivity.this, "Error while reserving spot!", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
+
+        builder.setNegativeButton("No", (dialog, which) -> Toast.makeText(ListParkingSpotsActivity.this, "Cancelled!", Toast.LENGTH_SHORT).show());
+        builder.create();
+        builder.show();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

@@ -1,6 +1,5 @@
 package com.example.myapplication;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -10,6 +9,8 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.example.myapplication.models.ParkingSpot;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -30,6 +31,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final int REQUEST_LOCATION = 101;
     private GoogleMap mMap;
     private ActivityMapsBinding binding;
+    private FusedLocationProviderClient fusedLocationProviderClient;
     FirebaseFirestore firestore;
     FirebaseAuth firebaseAuth;
     String userID;
@@ -46,6 +48,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
     }
 
 
@@ -77,9 +81,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
         // Add a marker to current position
-        LatLng current = new LatLng(46.773018, 23.595214);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(current));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(current, 15.0f));
+        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, location -> {
+            System.out.println("CURRENT LOC: " + location);
+
+            LatLng current = new LatLng(location.getLatitude(), location.getLongitude());
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(current));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(current, 15.0f));
+        });
+
     }
 
 

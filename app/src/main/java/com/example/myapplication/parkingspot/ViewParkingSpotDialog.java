@@ -103,8 +103,6 @@ public class ViewParkingSpotDialog extends DialogFragment implements View.OnClic
                 String postcode = mPostcode.getText().toString().trim();
                 String number = mNumber.getText().toString().trim();
                 boolean isClicked = mSwitch.isChecked();
-                System.out.println("ISCLICKED: " + isClicked);
-                System.out.println("CHECHED: " + mSwitch.isChecked());
 
 
                 if (!address.equals("")) {

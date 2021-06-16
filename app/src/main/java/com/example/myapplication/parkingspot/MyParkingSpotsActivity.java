@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.myapplication.LoginActivity;
 import com.example.myapplication.MainActivity;
 import com.example.myapplication.ProfileActivity;
 import com.example.myapplication.R;
@@ -106,7 +107,9 @@ public class MyParkingSpotsActivity extends AppCompatActivity implements View.On
                     drawerLayout.closeDrawers();
                     return true;
                 case R.id.menuLogout:
+                    Toast.makeText(MyParkingSpotsActivity.this, "Logging out!", Toast.LENGTH_SHORT).show();
                     drawerLayout.closeDrawers();
+                    logout();
                     return true;
             }
             return false;
@@ -286,5 +289,12 @@ public class MyParkingSpotsActivity extends AppCompatActivity implements View.On
         }
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mParkingSpotRecyclerViewAdapter);
+    }
+
+
+    public void logout() {
+        FirebaseAuth.getInstance().signOut();
+        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+        finish();
     }
 }

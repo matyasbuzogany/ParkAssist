@@ -38,7 +38,7 @@
 
         <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_maps"></activity>
+            android:label="@string/title_activity_maps" />
         <activity android:name=".parkingspot.MyParkingSpotsActivity" />
         <activity android:name=".listparkingspots.ListParkingSpotsActivity" />
         <activity android:name=".car.CarActivity" />

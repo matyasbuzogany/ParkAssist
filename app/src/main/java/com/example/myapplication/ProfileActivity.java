@@ -97,8 +97,9 @@ public class ProfileActivity extends AppCompatActivity {
                     drawerLayout.closeDrawers();
                     return true;
                 case R.id.menuLogout:
-                    Toast.makeText(ProfileActivity.this, "Logout Selected!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ProfileActivity.this, "Logging out!", Toast.LENGTH_SHORT).show();
                     drawerLayout.closeDrawers();
+                    logout();
                     return true;
             }
             return false;
@@ -134,4 +135,11 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
     }
+
+    public void logout() {
+        FirebaseAuth.getInstance().signOut();
+        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+        finish();
+    }
+
 }
